@@ -11,6 +11,9 @@
 //creo estructura de semaforos 
 struct semaforos {
     sem_t sem_mezclar;
+	sem_t sem_cocinar;
+	sem_t sem_usoSal;
+	sem_t sem_horneo;
 	//poner demas semaforos aqui
 };
 
@@ -74,6 +77,10 @@ void* ejecutarReceta(void *i) {
 	
 	//variables semaforos
 	sem_t sem_mezclar;
+	
+	sem_t sem_cocinar;
+	sem_t sem_usoSal;
+	sem_t sem_horneo;
 	//crear variables semaforos aqui
 	
 	//variables hilos
@@ -95,6 +102,10 @@ void* ejecutarReceta(void *i) {
 
 	//seteo semaforos
 	pthread_data->semaforos_param.sem_mezclar = sem_mezclar;
+	
+	pthread_data->semaforos_param.sem_cocinar = sem_cocinar;
+	pthread_data->semaforos_param.sem_usoSal = sem_usoSal;
+	pthread_data->semaforos_param.sem_horneo = sem_horneo;
 	//setear demas semaforos al struct aqui
 	
 
@@ -105,15 +116,43 @@ void* ejecutarReceta(void *i) {
 
 
 	    strcpy(pthread_data->pasos_param[1].accion, "mezclar");
-	    strcpy(pthread_data->pasos_param[1].ingredientes[0], "ajo");
-      strcpy(pthread_data->pasos_param[1].ingredientes[1], "perejil");
- 	    strcpy(pthread_data->pasos_param[1].ingredientes[2], "huevo");
-	    strcpy(pthread_data->pasos_param[1].ingredientes[3], "carne");
+	    
+		strcpy(pthread_data->pasos_param[1].ingredientes[2], "huevo");
 	
+	strcpy(pthread_data->pasos_param[2].accion, "usar");
+	strcpy(pthread_data->pasos_param[2].ingredientes[3], "sal");
+	//strcpy(pthread_data->pasos_param[1].ingredientes[0], "ajo");
+      //strcpy(pthread_data->pasos_param[1].ingredientes[1], "perejil");
+ 	
+	//strcpy(pthread_data->pasos_param[1].ingredientes[2], "huevo");
+	
+	strcpy(pthread_data->pasos_param[3].accion, "agregar");
+	    strcpy(pthread_data->pasos_param[3].ingredientes[4], "carne");
+	
+	strcpy(pthread_data->pasos_param[4].accion, "empanar");
+	strcpy(pthread_data->pasos_param[4].ingredientes[5], "milanesas");
+	
+	strcpy(pthread_data->pasos_param[5].accion, "cocinar");
+	strcpy(pthread_data->pasos_param[5].ingredientes[6], "milanesas");
+	
+	strcpy(pthread_data->pasos_param[6].accion, "hornear");
+	strcpy(pthread_data->pasos_param[6].ingredientes[7], "pan");
+	
+	strcpy(pthread_data->pasos_param[7].accion, "cortar");
+	strcpy(pthread_data->pasos_param[7].ingredientes[8], "lechuga fresca");
+	strcpy(pthread_data->pasos_param[7].ingredientes[9], "tomate");
+	strcpy(pthread_data->pasos_param[7].ingredientes[10], "cebolla morada");
+	strcpy(pthread_data->pasos_param[7].ingredientes[11], "pepino");
+
 	
 	//inicializo los semaforos
 
-	sem_init(&(pthread_data->semaforos_param.sem_mezclar),0,0);
+	//sem_init(&(pthread_data->semaforos_param.sem_mezclar),0,0);
+	
+	sem_init(&(pthread_data->semaforos_param.sem_usoSal),0,1);
+	sem_init(&(pthread_data->semaforos_param.sem_cocinar),0,1);
+	sem_init(&(pthread_data->semaforos_param.sem_horneo),0,1);
+	
 	//inicializar demas semaforos aqui
 
 
@@ -153,14 +192,20 @@ int main ()
 	int rc;
 	int *equipoNombre1 =malloc(sizeof(*equipoNombre1));
 	int *equipoNombre2 =malloc(sizeof(*equipoNombre2));
+	int *equipoNombre3 =malloc(sizeof(*equipoNombre3));
+	int *equipoNombre4 =malloc(sizeof(*equipoNombre4));
 //faltan equipos
   
 	*equipoNombre1 = 1;
 	*equipoNombre2 = 2;
+	*equipoNombre3 = 3;
+	*equipoNombre4 = 4;
 
 	//creo las variables los hilos de los equipos
 	pthread_t equipo1; 
 	pthread_t equipo2;
+	pthread_t equipo3; 
+	pthread_t equipo4;
 //faltan hilos
   
 	//inicializo los hilos de los equipos
@@ -173,6 +218,14 @@ int main ()
                             NULL,                          //atributos del thread
                                 ejecutarReceta,             //funcion a ejecutar
                                 equipoNombre2);
+	 rc = pthread_create(&equipo3,                           //identificador unico
+                            NULL,                          //atributos del thread
+                                ejecutarReceta,             //funcion a ejecutar
+                                equipoNombre3);
+	 rc = pthread_create(&equipo4,                           //identificador unico
+                            NULL,                          //atributos del thread
+                                ejecutarReceta,             //funcion a ejecutar
+                                equipoNombre4);
   //faltn inicializaciones
 
 
@@ -184,6 +237,8 @@ int main ()
 	//join de todos los hilos
 	pthread_join (equipo1,NULL);
 	pthread_join (equipo2,NULL);
+	pthread_join (equipo3,NULL);
+	pthread_join (equipo4,NULL);
 //.. faltan joins
 
 
